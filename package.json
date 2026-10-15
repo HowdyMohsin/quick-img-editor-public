@@ -1,0 +1,68 @@
+{
+  "name": "quick-img-editor",
+  "version": "1.1.1",
+  "description": "Quick IMG Editor Mac App",
+  "main": "src/main/main.js",
+  "author": "Mohsin Ali",
+  "license": "ISC",
+  "scripts": {
+    "start": "electron .",
+    "test:hdr-samples": "node tests/validate-hdr-samples.js",
+    "test:bracket-grouping": "node tests/validate-bracket-grouping.js",
+    "test:merge-isolation": "node tests/validate-merge-input-isolation.js",
+    "test:editor-regressions": "node tests/validate-editor-regressions.js",
+    "stage:helpers": "bash build/scripts/stage-macos-helpers.sh",
+    "verify:helpers": "node build/scripts/verify-helper-bundle.js",
+    "verify:helpers:packaged": "node build/scripts/verify-packaged-helpers.js",
+    "check:mac-signing": "node build/scripts/check-macos-signing-env.js",
+    "prepack": "npm run stage:helpers && npm run verify:helpers",
+    "postpack": "npm run verify:helpers:packaged",
+    "pack": "electron-builder --dir",
+    "predist": "npm run stage:helpers && npm run verify:helpers",
+    "postdist": "npm run verify:helpers:packaged",
+    "dist": "electron-builder",
+    "dist:mac:universal": "electron-builder --mac dmg --universal",
+    "dist:mac:x64": "electron-builder --mac dmg --x64",
+    "dist:mac:arm64": "electron-builder --mac dmg --arm64"
+  },
+  "devDependencies": {
+    "electron": "^40.8.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.quickimgeditor.app",
+    "productName": "Quick IMG Editor",
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "build/bin/**/*",
+      "assets/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "assets"
+      },
+      {
+        "from": "build/helpers/macos",
+        "to": "helpers"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.photography",
+      "target": [
+        "dmg"
+      ],
+      "icon": "assets/quick_img_editor.icns",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "Quick IMG Editor",
+      "icon": "assets/quick_img_editor.icns",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    }
+  }
+}
